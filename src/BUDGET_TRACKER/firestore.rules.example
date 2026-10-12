@@ -1,0 +1,11 @@
+// Template only. The app shows these rules, already filled in with YOUR User ID,
+// in Settings -> Database (with a Copy button). Publish them in
+// Firebase Console -> Firestore Database -> Rules.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if userId == 'YOUR_USER_ID';
+    }
+  }
+}

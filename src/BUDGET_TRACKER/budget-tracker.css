@@ -1,0 +1,261 @@
+/* =============================================================================
+   Budget Tracker — scoped styles.
+   Everything lives under  .bt-root  so nothing leaks into your other apps and
+   you do NOT need to change your shared tailwind.config.js / index.css.
+   (Layout/spacing uses normal Tailwind utility classes; colours, glass cards,
+   buttons and animations are defined here.)
+   ============================================================================= */
+.bt-root {
+  --bt-bg1: 239 230 251; --bt-bg2: 253 240 227; --bt-surface: 255 255 255;
+  --bt-ink: 42 18 51; --bt-mute: 138 122 147; --bt-line: 236 227 242;
+  --bt-blush: 255 228 238; --bt-sky: 222 240 255;
+  /* the accent palette: deep / mid / bright / soft shades. Each palette (below) only sets these four. */
+  --pal-deep: 61 11 74; --pal-mid: 90 20 112; --pal-acc: 124 58 237; --pal-soft: 167 139 250;
+  --bt-plum: var(--pal-deep); --bt-plum2: var(--pal-mid); --bt-accent: var(--pal-acc);
+  color-scheme: light;
+
+  box-sizing: border-box;
+  height: 100vh; height: 100dvh; width: 100%;
+  color: rgb(var(--bt-ink));
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  background:
+    radial-gradient(circle at 15% 10%, rgb(var(--bt-bg1)), transparent 55%),
+    radial-gradient(circle at 90% 90%, rgb(var(--bt-bg2)), transparent 55%),
+    rgb(var(--bt-bg1));
+}
+.bt-root.bt-dark {
+  --bt-bg1: 26 13 34; --bt-bg2: 36 16 20; --bt-surface: 43 24 54;
+  --bt-ink: 245 236 250; --bt-mute: 169 149 179; --bt-line: 58 37 71;
+  --bt-blush: 74 29 51; --bt-sky: 29 48 71;
+  --bt-plum: var(--pal-mid); --bt-plum2: var(--pal-acc); --bt-accent: var(--pal-soft);
+  color-scheme: dark;
+}
+/* ---------- extra themes (Settings -> Appearance). Dark ones also get the class bt-dark ---------- */
+.bt-root[data-theme='midnight'] { --bt-bg1: 8 10 20; --bt-bg2: 24 16 54; --bt-surface: 18 22 40; --bt-ink: 226 232 248; --bt-mute: 132 144 174; --bt-line: 34 40 68; --bt-blush: 46 28 56; --bt-sky: 20 42 74; }
+.bt-root[data-theme='aurora'] { --bt-bg1: 6 20 26; --bt-bg2: 14 40 56; --bt-surface: 13 34 42; --bt-ink: 218 244 240; --bt-mute: 120 160 164; --bt-line: 26 56 62; --bt-blush: 44 36 60; --bt-sky: 16 50 72; }
+.bt-root[data-theme='dusk'] { --bt-bg1: 30 26 42; --bt-bg2: 62 40 58; --bt-surface: 44 38 60; --bt-ink: 238 232 244; --bt-mute: 166 156 184; --bt-line: 66 58 86; --bt-blush: 80 48 70; --bt-sky: 42 54 90; }
+.bt-root[data-theme='sage'] { --bt-bg1: 224 234 224; --bt-bg2: 238 235 218; --bt-surface: 247 251 245; --bt-ink: 32 48 40; --bt-mute: 88 108 96; --bt-line: 204 220 208; --bt-blush: 244 228 218; --bt-sky: 212 232 230; }
+.bt-root[data-theme='mist'] { --bt-bg1: 224 231 242; --bt-bg2: 236 232 246; --bt-surface: 246 248 252; --bt-ink: 28 36 56; --bt-mute: 90 102 128; --bt-line: 206 214 230; --bt-blush: 240 228 240; --bt-sky: 212 230 248; }
+.bt-root[data-theme='aurora'] .bt-glass, .bt-root[data-theme='midnight'] .bt-glass { box-shadow: inset 0 1px 0 rgb(255 255 255 / .04); }
+
+.bt-root *, .bt-root *::before, .bt-root *::after { box-sizing: border-box; }
+.bt-root button, .bt-root input, .bt-root select, .bt-root textarea { font-family: inherit; }
+@media (min-width: 640px) { .bt-root { padding: 16px 0; } }
+
+/* phone frame (full screen on mobile, rounded card on desktop) */
+.bt-phone { position: relative; margin: 0 auto; display: flex; flex-direction: column; height: 100%; max-width: 430px; overflow: hidden; }
+@media (min-width: 640px) {
+  .bt-phone { border-radius: 34px; border: 1px solid rgb(var(--bt-line)); background: rgb(var(--bt-bg1)); box-shadow: 0 25px 50px -12px rgb(0 0 0 / .25); }
+}
+
+/* ---------- colour helpers ---------- */
+.bt-root .bt-bg-bg1 { background-color: rgb(var(--bt-bg1)); }
+.bt-root .bt-bg-surface { background-color: rgb(var(--bt-surface)); }
+.bt-root .bt-bg-surface80 { background-color: rgb(var(--bt-surface) / .8); }
+.bt-root .bt-bg-blush { background-color: rgb(var(--bt-blush)); }
+.bt-root .bt-bg-sky { background-color: rgb(var(--bt-sky)); }
+.bt-root .bt-bg-line { background-color: rgb(var(--bt-line)); }
+.bt-root .bt-bg-plum { background-color: rgb(var(--bt-plum)); }
+.bt-root .bt-bg-plum2 { background-color: rgb(var(--bt-plum2)); }
+.bt-root .bt-bg-sun { background-color: #fbc531; }
+.bt-root .bt-bg-danger { background-color: #f0605d; }
+.bt-root .bt-border-line { border-color: rgb(var(--bt-line)); }
+.bt-root .bt-border-plum { border-color: rgb(var(--bt-plum)); }
+.bt-root .bt-border-accent { border-color: rgb(var(--bt-accent)); }
+.bt-root .bt-border-ink { border-color: rgb(var(--bt-ink)); }
+.bt-root .bt-text-mute { color: rgb(var(--bt-mute)); }
+.bt-root .bt-text-plum { color: rgb(var(--pal-deep)); }
+.bt-root .bt-text-accent { color: rgb(var(--bt-accent)); }
+.bt-root .bt-text-danger { color: #f0605d; }
+.bt-root .bt-text-success { color: #2eae7b; }
+.bt-root .bt-grad-plum { background: linear-gradient(135deg, rgb(var(--bt-plum)), rgb(var(--bt-plum2))); }
+.bt-root .bt-grad-avatar { background: linear-gradient(135deg, #c9a7e8, #f3a6c0); }
+.bt-root .bt-fab {
+  background: linear-gradient(135deg, #ffd75e, #fbc531); color: rgb(var(--bt-plum));
+  box-shadow: 0 6px 16px rgb(61 11 74 / .35), inset 0 0 0 4px rgb(255 255 255 / .35), inset 0 0 0 5px rgb(61 11 74 / .18);
+}
+
+/* ---------- components ---------- */
+.bt-root .bt-glass { border: 1px solid rgb(var(--bt-line)); background: rgb(var(--bt-surface) / .8); border-radius: 16px; padding: 12px 14px; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.bt-root .bt-glass-list { padding: 4px 10px; }
+.bt-root .bt-field { width: 100%; border-radius: 12px; border: 1px solid rgb(var(--bt-line)); background: rgb(var(--bt-surface) / .8); padding: 12px; font-size: 15px; color: rgb(var(--bt-ink)); outline: none; transition: border-color .15s; }
+.bt-root .bt-field:focus { border-color: rgb(var(--bt-accent)); }
+.bt-root .bt-field-sm { padding: 6px 8px; font-size: 13px; }
+.bt-root .bt-btn-primary, .bt-root .bt-btn-ghost, .bt-root .bt-btn-danger { cursor: pointer; font-weight: 700; transition: transform .1s, opacity .15s; }
+.bt-root .bt-btn-primary { border: 0; border-radius: 16px; background: rgb(var(--bt-plum)); padding: 14px; font-size: 15px; color: #fff; }
+.bt-root .bt-btn-ghost { border: 1px solid rgb(var(--bt-line)); border-radius: 12px; background: rgb(var(--bt-surface) / .8); padding: 12px; color: rgb(var(--bt-ink)); }
+.bt-root .bt-btn-danger { border: 0; border-radius: 12px; background: #f0605d; padding: 12px; color: #fff; }
+.bt-root .bt-btn-primary:active, .bt-root .bt-btn-ghost:active, .bt-root .bt-btn-danger:active { transform: scale(.98); }
+.bt-root .bt-btn-primary:disabled { opacity: .5; }
+.bt-root .bt-hint { font-size: 12px; color: rgb(var(--bt-mute)); }
+
+/* guided-flow highlight (add sheet) */
+.bt-root .bt-highlight { border-color: rgb(var(--bt-accent)); box-shadow: 0 0 0 5px rgb(124 58 237 / .15); animation: bt-ring 1.2s ease-in-out 3; }
+@keyframes bt-ring { 50% { box-shadow: 0 0 0 10px rgb(124 58 237 / .06); } }
+@keyframes bt-slide { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes bt-pop { from { transform: scale(.94); opacity: 0; } to { transform: none; opacity: 1; } }
+.bt-root .bt-anim-slide { animation: bt-slide .25s ease-out; }
+.bt-root .bt-anim-pop { animation: bt-pop .18s ease-out; }
+@media (prefers-reduced-motion: reduce) { .bt-root * { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+.bt-root .bt-field-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+
+/* =============================================================================
+   LOOK & FEEL OPTIONS (Settings -> Customize look)
+   BUDGET_TRACKER.jsx sets attributes like  data-palette="ocean"  on .bt-root.
+   Each block below reacts to one of them. Defaults are the plain .bt-root rules above.
+   ============================================================================= */
+
+/* ---- shape variables used by .bt-glass, .bt-field, buttons and category icon tiles ---- */
+.bt-root { --bt-icon-radius: 12px; --bt-r-card: 16px; --bt-r-field: 12px; --bt-r-btn: 14px; --bt-row-pad: 10px;
+  --bt-nav-bg: rgb(var(--pal-deep)); --bt-nav-fg: #fff; --bt-nav-dim: rgb(255 255 255 / .5); }
+
+/* category icon shape */
+.bt-root[data-icon='round'] { --bt-icon-radius: 50%; }
+.bt-root[data-icon='soft'] { --bt-icon-radius: 12px; }
+.bt-root[data-icon='square'] { --bt-icon-radius: 3px; }
+.bt-root .bt-tile { border-radius: var(--bt-icon-radius); }
+
+/* corner roundness */
+.bt-root[data-radius='sharp'] { --bt-r-card: 6px; --bt-r-field: 4px; --bt-r-btn: 4px; }
+.bt-root[data-radius='round'] { --bt-r-card: 26px; --bt-r-field: 20px; --bt-r-btn: 999px; }
+.bt-root .bt-r-card { border-radius: var(--bt-r-card); }
+.bt-root .bt-glass { border-radius: var(--bt-r-card); }
+.bt-root .bt-field { border-radius: var(--bt-r-field); }
+.bt-root .bt-btn-primary, .bt-root .bt-btn-ghost, .bt-root .bt-btn-danger { border-radius: var(--bt-r-btn); }
+
+/* accent palettes: deep / mid / bright / soft  (plum is the default, defined at the top) */
+.bt-root[data-palette='orchid'] { --pal-deep: 88 18 96; --pal-mid: 134 25 143; --pal-acc: 162 28 175; --pal-soft: 232 121 249; }
+.bt-root[data-palette='rose'] { --pal-deep: 131 24 67; --pal-mid: 190 24 93; --pal-acc: 219 39 119; --pal-soft: 244 114 182; }
+.bt-root[data-palette='crimson'] { --pal-deep: 127 29 29; --pal-mid: 185 28 28; --pal-acc: 220 38 38; --pal-soft: 248 113 113; }
+.bt-root[data-palette='sunset'] { --pal-deep: 124 45 18; --pal-mid: 194 65 12; --pal-acc: 234 88 12; --pal-soft: 251 146 60; }
+.bt-root[data-palette='amber'] { --pal-deep: 92 52 8; --pal-mid: 146 84 6; --pal-acc: 180 100 6; --pal-soft: 251 191 36; }
+.bt-root[data-palette='forest'] { --pal-deep: 20 61 43; --pal-mid: 31 122 82; --pal-acc: 22 163 74; --pal-soft: 74 222 128; }
+.bt-root[data-palette='teal'] { --pal-deep: 19 78 74; --pal-mid: 15 118 110; --pal-acc: 13 148 136; --pal-soft: 94 234 212; }
+.bt-root[data-palette='ocean'] { --pal-deep: 7 59 76; --pal-mid: 14 116 144; --pal-acc: 2 132 199; --pal-soft: 56 189 248; }
+.bt-root[data-palette='indigo'] { --pal-deep: 30 27 99; --pal-mid: 55 48 163; --pal-acc: 79 70 229; --pal-soft: 129 140 248; }
+.bt-root[data-palette='graphite'] { --pal-deep: 30 41 59; --pal-mid: 51 65 85; --pal-acc: 71 85 105; --pal-soft: 148 163 184; }
+
+/* page background */
+.bt-root[data-bg='plain'] { background: rgb(var(--bt-bg1)); }
+
+/* balance card on Home */
+.bt-root[data-balance='solid'] .bt-grad-plum { background: rgb(var(--bt-plum)); }
+.bt-root[data-balance='outline'] .bt-grad-plum {
+  background: rgb(var(--bt-surface) / .8); color: rgb(var(--bt-ink)); border: 2px solid rgb(var(--bt-plum));
+}
+
+/* list spacing: compact / comfortable (default) / spacious */
+.bt-root .bt-row { padding-top: var(--bt-row-pad); padding-bottom: var(--bt-row-pad); }
+.bt-root[data-density='compact'] { --bt-row-pad: 5px; }
+.bt-root[data-density='spacious'] { --bt-row-pad: 16px; }
+.bt-root[data-density='spacious'] .bt-glass-list { padding: 8px 12px; }
+.bt-root[data-density='spacious'] .bt-glass { padding: 16px; }
+.bt-root[data-density='compact'] .bt-glass { padding: 9px 12px; }
+
+/* animations off */
+.bt-root[data-motion='off'] *, .bt-root[data-motion='off'] *::before, .bt-root[data-motion='off'] *::after {
+  animation: none !important; transition: none !important;
+}
+
+/* ---- bottom bar colours ---- */
+.bt-root[data-nav-style='accent'] { --bt-nav-bg: rgb(var(--bt-accent)); }
+.bt-root[data-nav-style='light'] { --bt-nav-bg: rgb(var(--bt-surface)); --bt-nav-fg: rgb(var(--bt-ink)); --bt-nav-dim: rgb(var(--bt-mute)); }
+.bt-root[data-nav-style='glass'] { --bt-nav-bg: rgb(var(--bt-surface) / .72); --bt-nav-fg: rgb(var(--bt-ink)); --bt-nav-dim: rgb(var(--bt-mute)); }
+.bt-root[data-nav-style='glass'] .bt-nav-bar { -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+.bt-root .bt-nav-bar { background: var(--bt-nav-bg); }
+.bt-root .bt-nav-tab { color: var(--bt-nav-dim); }
+.bt-root .bt-nav-tab.bt-nav-active { color: var(--bt-nav-fg); }
+.bt-root .bt-nav-shadow { box-shadow: 0 8px 24px rgb(0 0 0 / .22); }
+
+/* ---- the Add button in the middle of the bottom bar (Customize look -> Add button) ---- */
+.bt-root[data-fab='accent'] .bt-fab {
+  background: linear-gradient(145deg, rgb(var(--pal-soft)), rgb(var(--pal-acc)) 52%, rgb(var(--pal-mid)));
+  color: #fff;
+  box-shadow: 0 8px 22px rgb(var(--pal-acc) / .55), inset 0 0 0 3px rgb(255 255 255 / .22), inset 0 1px 0 rgb(255 255 255 / .5);
+}
+.bt-root[data-fab='glass'] .bt-fab {
+  background: rgb(var(--bt-surface) / .55);
+  -webkit-backdrop-filter: blur(14px) saturate(170%); backdrop-filter: blur(14px) saturate(170%);
+  color: rgb(var(--bt-accent));
+  border: 2px solid rgb(var(--bt-accent));
+  box-shadow: 0 8px 20px rgb(var(--pal-acc) / .35), inset 0 1px 0 rgb(255 255 255 / .55);
+}
+
+/* ---- keyboard focus + native controls ---- */
+.bt-root :focus-visible { outline: 2px solid rgb(var(--bt-accent)); outline-offset: 2px; }
+.bt-root input:focus-visible, .bt-root textarea:focus-visible { outline: none; }
+
+/* ---- small floating message ("Press back again to exit") ---- */
+.bt-root .bt-toast {
+  position: absolute; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); z-index: 50; transform: translateX(-50%);
+  max-width: calc(100% - 48px); padding: 10px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; text-align: center;
+  background: rgb(var(--bt-ink)); color: rgb(var(--bt-bg1)); box-shadow: 0 10px 28px rgb(0 0 0 / .3);
+  animation: bt-pop .18s ease-out; pointer-events: none;
+}
+
+/* ---- theme picker + option chips ---- */
+.bt-root .bt-chip { border: 1.5px solid transparent; background: rgb(var(--bt-surface) / .8); border-radius: 12px; padding: 9px 6px; font-size: 12px; font-weight: 600; text-align: center; color: rgb(var(--bt-mute)); transition: border-color .15s, color .15s; }
+.bt-root .bt-chip[aria-pressed='true'] { border-color: rgb(var(--bt-accent)); background: rgb(var(--bt-blush)); color: rgb(var(--bt-ink)); }
+.bt-root .bt-theme-card { border: 2px solid transparent; border-radius: 14px; padding: 5px; text-align: center; font-size: 11px; font-weight: 600; transition: border-color .15s; }
+.bt-root .bt-theme-card[aria-pressed='true'] { border-color: rgb(var(--bt-accent)); }
+.bt-root .bt-theme-preview { position: relative; height: 46px; border-radius: 10px; overflow: hidden; border: 1px solid rgb(0 0 0 / .08); margin-bottom: 5px; }
+.bt-root .bt-theme-preview i { position: absolute; display: block; border-radius: 4px; }
+
+/* =============================================================================
+   ANIMATED BACKGROUNDS (Customize look -> Background): aurora, orbs, waves, stars
+   BackgroundFx.jsx draws the shapes inside the phone frame, behind every screen. Pure CSS, no canvas.
+   The colours come from the accent palette and the theme, so they always match.
+   "Animations: Off" and the phone's reduce-motion setting freeze them (see the rules above).
+   ============================================================================= */
+.bt-root .bt-bgfx { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.bt-root .bt-bgfx i { position: absolute; display: block; will-change: transform; }
+
+/* aurora: three big soft colour clouds drifting slowly */
+.bt-root .bt-bgfx-aurora i { border-radius: 50%; filter: blur(46px); opacity: .5; }
+.bt-root .bt-bgfx-aurora i:nth-child(1) { width: 92%; height: 46%; left: -26%; top: -10%; background: rgb(var(--pal-acc) / .55); animation: bt-aur-a 24s ease-in-out infinite alternate; }
+.bt-root .bt-bgfx-aurora i:nth-child(2) { width: 86%; height: 44%; right: -34%; top: 30%; background: rgb(var(--pal-soft) / .5); animation: bt-aur-b 30s ease-in-out infinite alternate; }
+.bt-root .bt-bgfx-aurora i:nth-child(3) { width: 90%; height: 42%; left: -20%; bottom: -12%; background: rgb(var(--bt-sky) / .9); animation: bt-aur-c 27s ease-in-out infinite alternate; }
+.bt-root.bt-dark .bt-bgfx-aurora i { opacity: .38; }
+@keyframes bt-aur-a { from { transform: translate(0, 0) scale(1); } to { transform: translate(34%, 22%) scale(1.25); } }
+@keyframes bt-aur-b { from { transform: translate(0, 0) scale(1.1); } to { transform: translate(-38%, -26%) scale(.85); } }
+@keyframes bt-aur-c { from { transform: translate(0, 0) scale(.9); } to { transform: translate(30%, -30%) scale(1.2); } }
+
+/* orbs: glassy bubbles floating up */
+.bt-root .bt-bgfx-orbs i {
+  bottom: -20%; border-radius: 50%;
+  background: radial-gradient(circle at 30% 28%, rgb(255 255 255 / .55), rgb(var(--pal-soft) / .4) 38%, rgb(var(--pal-acc) / .12) 70%, transparent 72%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .18);
+  animation: bt-rise linear infinite;
+}
+.bt-root.bt-dark .bt-bgfx-orbs i { background: radial-gradient(circle at 30% 28%, rgb(255 255 255 / .22), rgb(var(--pal-soft) / .26) 38%, rgb(var(--pal-acc) / .08) 70%, transparent 72%); }
+@keyframes bt-rise {
+  0% { transform: translate3d(0, 0, 0) scale(.9); opacity: 0; }
+  12% { opacity: 1; }
+  50% { transform: translate3d(14px, -65vh, 0) scale(1); }
+  88% { opacity: 1; }
+  100% { transform: translate3d(-12px, -125vh, 0) scale(1.08); opacity: 0; }
+}
+
+/* waves: big rounded squares turning slowly, only their top edge shows, like layered waves */
+.bt-root .bt-bgfx-waves i { left: -60%; width: 220%; height: 220%; border-radius: 41%; animation: bt-spin linear infinite; }
+.bt-root .bt-bgfx-waves i:nth-child(1) { bottom: -178%; background: rgb(var(--pal-acc) / .16); animation-duration: 34s; }
+.bt-root .bt-bgfx-waves i:nth-child(2) { bottom: -184%; background: rgb(var(--pal-soft) / .2); animation-duration: 46s; animation-direction: reverse; }
+.bt-root .bt-bgfx-waves i:nth-child(3) { bottom: -190%; background: rgb(var(--pal-mid) / .22); animation-duration: 58s; }
+@keyframes bt-spin { to { transform: rotate(360deg); } }
+
+/* stars: twinkling dots (soft accent dots on light themes, bright ones on dark themes) */
+.bt-root .bt-bgfx-stars i { border-radius: 50%; background: rgb(var(--pal-acc)); animation: bt-twinkle ease-in-out infinite; }
+.bt-root.bt-dark .bt-bgfx-stars i { background: rgb(var(--pal-soft)); box-shadow: 0 0 6px rgb(var(--pal-soft) / .8); }
+@keyframes bt-twinkle { 0%, 100% { opacity: .08; transform: scale(.7); } 50% { opacity: .85; transform: scale(1.25); } }
+
+/* when animations are off (or the phone asks for less motion) the shapes stay still but visible */
+@media (prefers-reduced-motion: reduce) { .bt-root .bt-bgfx i { animation: none !important; } }
+.bt-root .bt-bgfx-stars i { opacity: .5; }
+.bt-root[data-motion='off'] .bt-bgfx-orbs i { bottom: var(--rest, 30%); opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .bt-root .bt-bgfx-orbs i { bottom: var(--rest, 30%); opacity: 1; } }
+
+/* ---- category boxes in Add transaction (Customize look -> Category border). Off = no border, no box; the chosen one is still tinted ---- */
+.bt-root[data-cat-border='off'] .bt-cat { border-color: transparent; background: transparent; }
+.bt-root[data-cat-border='off'] .bt-cat.bt-cat-on { background: rgb(var(--bt-blush)); }
