@@ -30,10 +30,11 @@ import { clearDraft, getDraft, setDraft, touchDraft } from '../services/drafts';
 
 const DRAFT_LIFETIME_MS = 30 * 1000; // change this number to keep unfinished entries longer
 
-export default function AddSheet({ initial, preset, onClose, onSaved, onAddCategory }) {
+// quiet = opened by the app tour: no keyboard, no draft
+export default function AddSheet({ initial, preset, quiet = false, onClose, onSaved, onAddCategory }) {
   const { categories, goals, transactions, addTransaction, addPlanMove, updateTransaction } = useData();
   const isEditing = Boolean(initial);
-  const useDraft = !isEditing && !preset; // only a plain "add" uses drafts
+  const useDraft = !isEditing && !preset && !quiet; // only a plain "add" uses drafts
   const isLinked = isEditing && Boolean(initial.goalId); // a savings plan move: type and category are fixed
 
   // An unfinished entry from a moment ago (or null)
@@ -88,6 +89,7 @@ export default function AddSheet({ initial, preset, onClose, onSaved, onAddCateg
   // When the popup opens, focus the amount.
   // IMPORTANT: a useEffect may only return a CLEANUP FUNCTION (or nothing).
   useEffect(() => {
+    if (quiet) return undefined; // the tour must not open the keyboard
     const timer = setTimeout(() => {
       if (amountInput.current) amountInput.current.focus();
     }, 60);
@@ -265,7 +267,8 @@ export default function AddSheet({ initial, preset, onClose, onSaved, onAddCateg
           </div>
         )}
 
-        {/* 1. Expense or Income */}
+        {/* 1. Expense or Income + 2. Amount */}
+        <div data-tour="add-top" className="flex flex-col gap-2.5">
         {!isLinked && (
           <Segmented
             value={type}
@@ -292,10 +295,11 @@ export default function AddSheet({ initial, preset, onClose, onSaved, onAddCateg
             }
           }}
         />
+        </div>
 
         {/* 3. Category grid (+ an "Add" tile that takes the user to Settings -> Categories) */}
         {!isLinked && (
-        <div ref={categoryBox} className={`${boxBase} ${highlight === 'category' ? 'bt-highlight' : ''}`}>
+        <div ref={categoryBox} data-tour="add-categories" className={`${boxBase} ${highlight === 'category' ? 'bt-highlight' : ''}`}>
           {/* normal categories: first the ones you use most, then all the others, then the "Add" tile */}
           {(() => {
             const { quick, rest } = ranked(type);
@@ -388,7 +392,7 @@ export default function AddSheet({ initial, preset, onClose, onSaved, onAddCateg
         )}
 
         {/* 4. Note + date */}
-        <div ref={extraBox} className={`${boxBase} flex flex-col gap-2.5 ${highlight === 'extra' ? 'bt-highlight' : ''}`}>
+        <div ref={extraBox} data-tour="add-details" className={`${boxBase} flex flex-col gap-2.5 ${highlight === 'extra' ? 'bt-highlight' : ''}`}>
           <input
             ref={noteInput}
             className="bt-field"
@@ -415,7 +419,7 @@ export default function AddSheet({ initial, preset, onClose, onSaved, onAddCateg
 
         {error && <p className="text-xs bt-text-danger">{error}</p>}
 
-        <button className="bt-btn-primary" onClick={save} disabled={saving}>
+        <button data-tour="add-save" className="bt-btn-primary" onClick={save} disabled={saving}>
           {saving ? 'Saving…' : isEditing ? 'Update' : 'Save'}
         </button>
       </Sheet>

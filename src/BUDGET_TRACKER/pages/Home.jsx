@@ -56,7 +56,7 @@ export default function Home({ txs, range, period, setPeriod, onManageGoals, onO
   return (
     <div>
       {/* greeting */}
-      <div className="mb-3 flex items-center gap-2.5">
+      <div data-tour="home-greeting" className="mb-3 flex items-center gap-2.5">
         <Avatar photo={profile.photo} name={profile.name} size={40} />
         <div>
           <small className="block text-xs bt-text-mute">Hello,</small>
@@ -68,7 +68,7 @@ export default function Home({ txs, range, period, setPeriod, onManageGoals, onO
       <PeriodBar period={period} setPeriod={setPeriod} range={range} />
 
       {/* balance card */}
-      <div className="relative overflow-hidden bt-r-card bt-grad-plum p-[18px] text-white">
+      <div data-tour="balance-card" className="relative overflow-hidden bt-r-card bt-grad-plum p-[18px] text-white">
         <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/10" />
         <button aria-label="Show or hide balance" className="absolute right-4 top-4 z-10" onClick={() => setHideBalance(!hideBalance)}>
           <Icon name={hideBalance ? 'eyeoff' : 'eye'} size={18} />
@@ -82,7 +82,7 @@ export default function Home({ txs, range, period, setPeriod, onManageGoals, onO
       <h2 className="mb-2.5 mt-5 flex items-center justify-between text-[15px] font-bold">
         Statistics <small className="text-xs font-medium bt-text-mute">{range.label}</small>
       </h2>
-      <div className="grid grid-cols-2 gap-2.5">
+      <div data-tour="stats" className="grid grid-cols-2 gap-2.5">
         <div className="flex flex-col gap-0.5 bt-r-card bt-bg-sky px-3.5 py-3">
           <small className="flex items-center gap-1 text-[11px] bt-text-mute"><Icon name="down" size={13} /> Income</small>
           <b className="text-[17px]">{fmt(income)}</b>
@@ -94,6 +94,7 @@ export default function Home({ txs, range, period, setPeriod, onManageGoals, onO
       </div>
 
       {/* savings plans: tap a card to see everything about that plan. With no plans, only a small "create" button is shown. */}
+      <div data-tour="plans">
       {goals.length > 0 ? (
         <>
           <h2 className="mb-2.5 mt-5 flex items-center justify-between text-[15px] font-bold">
@@ -129,6 +130,7 @@ export default function Home({ txs, range, period, setPeriod, onManageGoals, onO
           <Icon name="plus" size={15} /> Create a savings plan
         </button>
       )}
+      </div>
 
       {/* recent transactions, or ALL of them after "See all" */}
       <h2 className="mb-2.5 mt-5 flex items-center justify-between text-[15px] font-bold">
@@ -137,7 +139,7 @@ export default function Home({ txs, range, period, setPeriod, onManageGoals, onO
         ) : (
           <span>Recent Transactions <small className="ml-1 text-xs font-medium bt-text-mute">Last 7 days</small></span>
         )}
-        <button className="text-xs font-medium bt-text-mute" onClick={toggleAll}>{showAll ? 'Show less' : 'See all'}</button>
+        <button data-tour="see-all" className="text-xs font-medium bt-text-mute" onClick={toggleAll}>{showAll ? 'Show less' : 'See all'}</button>
       </h2>
 
       {!showAll && (
@@ -146,8 +148,8 @@ export default function Home({ txs, range, period, setPeriod, onManageGoals, onO
             {recent.length === 0 && (
               <div className="p-4 text-center text-[13px] bt-text-mute">No transactions in the last 7 days. Tap the add button to add one.</div>
             )}
-            {recent.map((tx) => (
-              <TransactionRow key={tx.id} tx={tx} onOpen={() => onOpen(tx)} onEdit={() => onEdit(tx)} onDelete={() => onDelete(tx)} />
+            {recent.map((tx, index) => (
+              <TransactionRow key={tx.id} tourId={index === 0 ? 'first-row' : undefined} tx={tx} onOpen={() => onOpen(tx)} onEdit={() => onEdit(tx)} onDelete={() => onDelete(tx)} />
             ))}
           </div>
           {recent.length > 0 && <p className="bt-hint mt-2 text-center">← swipe left to edit · swipe right to delete →</p>}

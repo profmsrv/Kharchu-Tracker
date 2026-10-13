@@ -54,7 +54,7 @@ export default function PeriodBar({ period, setPeriod, range }) {
   }
 
   return (
-    <div className="my-2.5 flex items-center justify-between">
+    <div data-tour="period-bar" className="my-2.5 flex items-center justify-between">
       {/* previous period: offset goes down by one */}
       <button aria-label="Previous" className={arrowButton} onClick={() => setPeriod({ ...period, o: period.o - 1 })}>
         <Icon name="chevL" />

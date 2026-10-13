@@ -60,16 +60,17 @@ export default function Budget({ txs, range, period, setPeriod }) {
       <PeriodBar period={period} setPeriod={setPeriod} range={range} />
 
       {/* the two popup pickers */}
-      <div className="mb-3 grid grid-cols-2 gap-2.5">
+      <div data-tour="budget-pickers" className="mb-3 grid grid-cols-2 gap-2.5">
         <Pick label="Chart type" value={chartType} opts={chartOptions} onPick={(key) => { setChartType(key); setField(0); }} />
         <Pick label="Show data" value={field} opts={fieldOptions} onPick={setField} />
       </div>
 
-      <div className="bt-glass">
+      <div data-tour="budget-chart" className="bt-glass">
         <ChartPanel type={chartType} field={field} rows={rows} incomeRows={incomeRows} txs={txs} range={range} />
       </div>
 
       {/* one card per expense category: what was spent and its share of all spending */}
+      <div data-tour="budget-cards">
       <h2 className="mb-2.5 mt-5 flex items-center justify-between text-[15px] font-bold">
         Spending by category <small className="text-xs font-medium bt-text-mute">{fmt(totalSpent)}</small>
       </h2>
@@ -88,6 +89,7 @@ export default function Budget({ txs, range, period, setPeriod }) {
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );

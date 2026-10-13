@@ -1,0 +1,221 @@
+// The app TOUR (components/Tour.jsx). Three parts:
+//   1. language question           2. INTRO: why the app helps (a few cards)
+//   3. STEPS: the tour opens each tab / popup and points at every button (a spotlight + a small card)
+//   4. OUTRO: "you are ready"
+//
+// TOUR_STEPS says WHERE to go and WHAT to point at (the same for every language).
+// TOUR[language] has the texts. To add a language: copy one block of TOUR, translate it, add it to LANGUAGES.
+//
+// A target is the value of a  data-tour="..."  attribute somewhere in the app (a list = one box around all of them).
+// Keep every claim in the texts true: no made-up numbers or "studies show".
+export const LANGUAGES = [
+  { id: 'en', native: 'English', hint: 'Continue in English' },
+  { id: 'te', native: 'తెలుగు', hint: 'తెలుగులో కొనసాగించండి' },
+  { id: 'hi', native: 'हिन्दी', hint: 'हिन्दी में जारी रखें' },
+];
+
+// tab: 'home' | 'budget' | 'insights' | 'settings'      view: Settings sub-screen ('main' | 'appearance')
+// popup: 'add' = the Add transaction popup is open      wiggle: the target moves a little, to show "swipe"
+// optional: skip the step if the target does not exist (for example "Install app" when already installed)
+const step = (id, tab, target, extra = {}) => ({ id, tab, view: 'main', popup: null, target, ...extra });
+
+export const TOUR_STEPS = [
+  step('greeting', 'home', 'home-greeting'),
+  step('period', 'home', 'period-bar'),
+  step('balance', 'home', 'balance-card'),
+  step('stats', 'home', 'stats'),
+  step('plans', 'home', 'plans'),
+  step('recent', 'home', 'first-row', { wiggle: true }),
+  step('seeall', 'home', 'see-all'),
+  step('navbar', 'home', 'nav-bar'),
+  step('add', 'home', 'nav-add'),
+  step('add_amount', 'home', 'add-top', { popup: 'add' }),
+  step('add_categories', 'home', 'add-categories', { popup: 'add' }),
+  step('add_details', 'home', ['add-details', 'add-save'], { popup: 'add' }),
+  step('budget_pickers', 'budget', 'budget-pickers'),
+  step('budget_chart', 'budget', 'budget-chart'),
+  step('budget_cards', 'budget', 'budget-cards'),
+  step('insights_cards', 'insights', 'insights-cards'),
+  step('insights_averages', 'insights', 'insights-averages'),
+  step('insights_search', 'insights', 'insights-search'),
+  step('settings_notes', 'settings', 'settings-notes'),
+  step('settings_profile', 'settings', 'settings-profile'),
+  step('settings_install', 'settings', 'settings-install', { optional: true }),
+  step('settings_look', 'settings', 'settings-look'),
+  step('look_theme', 'settings', 'look-theme', { view: 'appearance' }),
+  step('look_icons', 'settings', ['look-iconShape', 'look-catBorder'], { view: 'appearance' }),
+  step('look_bar', 'settings', ['look-navType', 'look-navStyle', 'look-fab'], { view: 'appearance' }),
+  step('look_colours', 'settings', ['look-palette', 'look-radius', 'look-background'], { view: 'appearance' }),
+  step('settings_database', 'settings', 'settings-database'),
+  step('settings_categories', 'settings', 'settings-categories'),
+  step('settings_plans', 'settings', 'settings-plans'),
+  step('settings_csv', 'settings', ['settings-export', 'settings-import']),
+  step('settings_tour', 'settings', 'settings-tour'),
+];
+
+export const TOUR = {
+  // =============================================================== English
+  en: {
+    chooseTitle: 'Choose your language',
+    chooseSub: 'The tour continues in the language you pick.',
+    next: 'Next', back: 'Back', skip: 'Skip', language: 'Language', letsGo: 'Show me around',
+    start: 'Start using Kharchu', demo: 'Sample data · your own data is safe',
+    intro: [
+      { icon: 'rupee', title: 'Know where your money goes', body: 'Does money “just disappear” before the month ends? Kharchu shows you exactly where every rupee went, so you are in control instead of guessing.', points: [] },
+      {
+        icon: 'star', title: 'Why tracking changes things', body: '',
+        points: [
+          'What you can see, you can manage. Seeing your spending makes you spend with more thought, without feeling restricted.',
+          'Small leaks add up: ₹100 on tea or snacks every day is ₹3,000 a month. Now you will notice them.',
+          'A calmer mind: no more month-end worry about “where did it all go?”.',
+          'Every entry is a tiny win. Keep going and it becomes a habit that lasts.',
+        ],
+      },
+      { icon: 'sparkle', title: 'Let’s take a quick tour', body: 'I will open each part of the app and point at every button, about 3 minutes in all. You can skip any time. If you have no entries yet, I use sample data, and your own data stays untouched.', points: [] },
+    ],
+    outro: { icon: 'check', title: 'You are ready!', body: 'Add your first entry today. It takes only 10 seconds, and future you will say thank you. You can replay this tour any time from Settings → App tour.' },
+    steps: {
+      greeting: ['Your Home', 'Everything starts here: a quick look at your money today. Your photo and name come from Settings.'],
+      period: ['Pick the time you want to see', 'Tap the middle to choose Week, Month, Year or your own dates. Use the arrows to go back in time. Every tab follows this choice.'],
+      balance: ['Your balance', 'This is what is left in the selected period. Tap the eye to hide it when someone is near you.'],
+      stats: ['Income and expenses', 'See what came in and what went out in the same period, side by side.'],
+      plans: ['Savings plans', 'Your goals live here, each with a progress bar. Tap one to see its full story, or tap Manage.'],
+      recent: ['Your latest entries', 'Tap an entry for its details. Swipe it left to edit, or right to delete. Try it after the tour!'],
+      seeall: ['See all', 'Tap See all to show every transaction right here on Home, day by day. Back brings you to the short list.'],
+      navbar: ['Four tabs, always there', 'Home, Budget, Insights and Settings. Tap any tab to jump there.'],
+      add: ['The Add button', 'Tap this big button whenever you spend or earn. It takes about 10 seconds.'],
+      add_amount: ['Type and amount', 'Choose Expense or Income, then type the amount.'],
+      add_categories: ['Pick a category', 'Your recent and most used categories come first, so most entries are one tap. Tap Add to make a new one.'],
+      add_details: ['Note, date and Save', 'Add a note if you like, change the date if needed, then tap Save. The entry is stored on your phone at once.'],
+      budget_pickers: ['Choose your chart', 'Pick a chart type (rings, donut, bars, trend, radar) and what data to show, including averages.'],
+      budget_chart: ['Your money as a picture', 'The chart follows the period you chose. A picture makes it easy to see where the money goes.'],
+      budget_cards: ['Spending by category', 'Every category with its total and its share of all your spending.'],
+      insights_cards: ['Quick numbers', 'Savings rate, daily average, top category, biggest expense, number of entries and net, for the period.'],
+      insights_averages: ['Category averages', 'For every category: the total, how many entries, and the average per entry. Spending and income are shown separately.'],
+      insights_search: ['Search and filter', 'Find any entry by note or category, and filter by Expense or Income. Entries are grouped by day.'],
+      settings_notes: ['Notes', 'Keep any notes here. Your text is saved while you type, so nothing is lost.'],
+      settings_profile: ['Your profile', 'Add your photo and name. Log out removes the data from this phone, so export a CSV first.'],
+      settings_install: ['Install the app', 'Add Kharchu to your home screen and open it like any other app.'],
+      settings_look: ['Customize look', 'Make the app yours. Let me show what is inside.'],
+      look_theme: ['Themes', 'Light, dark, or a soft theme that is easy on the eyes: Midnight, Aurora, Dusk, Sage or Mist.'],
+      look_icons: ['Category icons', 'Choose round, soft or square icon tiles, and show or hide the box around categories in the Add popup.'],
+      look_bar: ['Bottom bar and Add button', 'Pick the layout of the bottom bar (notch, flat, floating), its colour, and the style of the Add button.'],
+      look_colours: ['Colours, corners and background', 'Choose from 11 accent colours, sharp or round corners, and plain, gradient or animated backgrounds. Card style, spacing, animations and currency are below.'],
+      settings_database: ['Database and backup', 'Your data lives on this phone. Connect your own Firebase to back it up and use the app on more devices.'],
+      settings_categories: ['Manage categories', 'Add or remove expense and income categories with your own icon and colour.'],
+      settings_plans: ['Manage savings plans', 'Create a plan for anything you want to buy or save for. Edit it or delete it any time.'],
+      settings_csv: ['Export and import', 'Download all entries as a CSV file, or import entries from one. Duplicates are skipped.'],
+      settings_tour: ['App tour', 'You can see this tour again any time from here.'],
+    },
+  },
+
+  // =============================================================== తెలుగు
+  te: {
+    chooseTitle: 'మీ భాషను ఎంచుకోండి',
+    chooseSub: 'మీరు ఎంచుకున్న భాషలోనే టూర్ కొనసాగుతుంది.',
+    next: 'తరువాత', back: 'వెనుకకు', skip: 'స్కిప్', language: 'భాష', letsGo: 'చూపించండి',
+    start: 'ఖర్చు వాడటం మొదలుపెట్టండి', demo: 'నమూనా డేటా · మీ సొంత డేటా సురక్షితం',
+    intro: [
+      { icon: 'rupee', title: 'మీ డబ్బు ఎక్కడికి వెళ్తుందో తెలుసుకోండి', body: 'నెల పూర్తికాకముందే డబ్బు “ఎటో మాయమైపోతోంది” అనిపిస్తుందా? Kharchu ప్రతి రూపాయి ఎక్కడ ఖర్చయిందో స్పష్టంగా చూపిస్తుంది. ఊహించాల్సిన పని లేదు, నియంత్రణ మీ చేతిలోనే ఉంటుంది.', points: [] },
+      {
+        icon: 'star', title: 'ట్రాక్ చేస్తే ఎందుకు మార్పు వస్తుంది?', body: '',
+        points: [
+          'కనిపిస్తేనే నియంత్రించగలం. మీ ఖర్చులు కళ్ళ ముందు కనిపిస్తే, ఇబ్బంది పడకుండానే ఆలోచించి ఖర్చు చేస్తారు.',
+          'చిన్న ఖర్చులే పెద్ద లీకులు: రోజుకు ₹100 టీ లేదా స్నాక్స్ అంటే నెలకు ₹3,000. ఇకపై మీరు వాటిని గమనిస్తారు.',
+          'మనశ్శాంతి: “ఇంత డబ్బు ఏమైంది?” అనే నెలాఖరు టెన్షన్ ఉండదు.',
+          'ప్రతి ఎంట్రీ ఒక చిన్న విజయం. కొనసాగిస్తే అది మంచి అలవాటు అవుతుంది.',
+        ],
+      },
+      { icon: 'sparkle', title: 'ఒక చిన్న టూర్ చేద్దాం', body: 'యాప్‌లోని ప్రతి భాగాన్ని తెరిచి, ప్రతి బటన్‌ను చూపిస్తాను. సుమారు 3 నిమిషాలు పడుతుంది, ఎప్పుడైనా స్కిప్ చేయవచ్చు. మీకు ఇంకా ఎంట్రీలు లేకపోతే నమూనా డేటా వాడతాను, మీ సొంత డేటాకు ఏమీ కాదు.', points: [] },
+    ],
+    outro: { icon: 'check', title: 'మీరు సిద్ధం!', body: 'ఈరోజే మీ మొదటి ఎంట్రీ చేయండి. 10 సెకన్లు చాలు, భవిష్యత్తులో మీకు మీరే థాంక్స్ చెప్పుకుంటారు. ఈ టూర్‌ను ఎప్పుడైనా Settings → App tour లో మళ్ళీ చూడవచ్చు.' },
+    steps: {
+      greeting: ['మీ హోమ్', 'ఇక్కడి నుండే అన్నీ మొదలవుతాయి: ఈరోజు మీ డబ్బు స్థితి ఒక్క చూపులో. మీ ఫోటో, పేరు Settings లో మార్చవచ్చు.'],
+      period: ['మీరు చూడాలనుకునే కాలాన్ని ఎంచుకోండి', 'మధ్యలో నొక్కి వారం, నెల, సంవత్సరం లేదా మీ సొంత తేదీలను ఎంచుకోండి. బాణాలతో వెనక్కి వెళ్ళవచ్చు. అన్ని ట్యాబ్‌లు ఇదే అనుసరిస్తాయి.'],
+      balance: ['మీ బ్యాలెన్స్', 'ఎంచుకున్న కాలంలో మిగిలిన మొత్తం ఇది. ఎవరైనా దగ్గర ఉంటే కన్ను గుర్తు నొక్కి దాచవచ్చు.'],
+      stats: ['ఆదాయం, ఖర్చులు', 'అదే కాలంలో వచ్చినది, ఖర్చయినది పక్కపక్కనే చూడండి.'],
+      plans: ['సేవింగ్స్ ప్లాన్లు', 'మీ లక్ష్యాలు ఇక్కడ ప్రోగ్రెస్ బార్‌తో ఉంటాయి. ఒకదాన్ని నొక్కితే పూర్తి వివరాలు, లేదా Manage నొక్కండి.'],
+      recent: ['మీ తాజా ఎంట్రీలు', 'ఎంట్రీని నొక్కితే వివరాలు. ఎడమకు స్వైప్ చేస్తే ఎడిట్, కుడికి స్వైప్ చేస్తే డిలీట్. టూర్ తర్వాత ప్రయత్నించండి!'],
+      seeall: ['అన్నీ చూడండి', 'See all నొక్కితే అన్ని ట్రాన్సాక్షన్లు ఇక్కడే రోజు వారీగా కనిపిస్తాయి. Back నొక్కితే చిన్న జాబితాకు వస్తుంది.'],
+      navbar: ['నాలుగు ట్యాబ్‌లు, ఎప్పుడూ అందుబాటులో', 'Home, Budget, Insights, Settings. ఏ ట్యాబ్ నొక్కినా అక్కడికి వెళ్తుంది.'],
+      add: ['Add బటన్', 'ఖర్చు చేసినా, డబ్బు వచ్చినా ఈ పెద్ద బటన్ నొక్కండి. సుమారు 10 సెకన్లు చాలు.'],
+      add_amount: ['రకం, మొత్తం', 'Expense లేదా Income ఎంచుకుని, మొత్తం టైప్ చేయండి.'],
+      add_categories: ['కేటగిరీ ఎంచుకోండి', 'మీరు ఇటీవల, ఎక్కువగా వాడిన కేటగిరీలు మొదట వస్తాయి, కాబట్టి చాలా ఎంట్రీలు ఒక్క ట్యాప్‌తో అవుతాయి. కొత్తది కావాలంటే Add నొక్కండి.'],
+      add_details: ['నోట్, తేదీ, Save', 'కావాలంటే నోట్ రాయండి, అవసరమైతే తేదీ మార్చండి, తరువాత Save నొక్కండి. ఎంట్రీ వెంటనే మీ ఫోన్‌లో సేవ్ అవుతుంది.'],
+      budget_pickers: ['చార్ట్ ఎంచుకోండి', 'చార్ట్ రకం (రింగ్స్, డోనట్, బార్, ట్రెండ్, రాడార్), చూపించే డేటాను ఎంచుకోండి. సగటులు కూడా ఉన్నాయి.'],
+      budget_chart: ['మీ డబ్బు ఒక చిత్రంగా', 'చార్ట్ మీరు ఎంచుకున్న కాలాన్ని అనుసరిస్తుంది. డబ్బు ఎక్కడికి వెళ్తుందో చిత్రంలో సులభంగా తెలుస్తుంది.'],
+      budget_cards: ['కేటగిరీల వారీగా ఖర్చు', 'ప్రతి కేటగిరీ మొత్తం, మొత్తం ఖర్చులో దాని వాటా.'],
+      insights_cards: ['త్వరిత గణాంకాలు', 'ఈ కాలానికి సేవింగ్స్ రేట్, రోజువారీ సగటు, అగ్ర కేటగిరీ, పెద్ద ఖర్చు, ఎంట్రీల సంఖ్య, నికరం.'],
+      insights_averages: ['కేటగిరీ సగటులు', 'ప్రతి కేటగిరీకి: మొత్తం, ఎన్ని ఎంట్రీలు, ఒక్కో ఎంట్రీ సగటు. ఖర్చు, ఆదాయం వేర్వేరుగా చూపిస్తాయి.'],
+      insights_search: ['వెతకండి, ఫిల్టర్ చేయండి', 'నోట్ లేదా కేటగిరీతో ఏ ఎంట్రీనైనా వెతకండి, Expense లేదా Income తో ఫిల్టర్ చేయండి. ఎంట్రీలు రోజు వారీగా ఉంటాయి.'],
+      settings_notes: ['నోట్స్', 'ఏ నోట్స్ అయినా ఇక్కడ రాసుకోండి. టైప్ చేస్తుండగానే సేవ్ అవుతుంది, ఏదీ పోదు.'],
+      settings_profile: ['మీ ప్రొఫైల్', 'మీ ఫోటో, పేరు జోడించండి. Log out చేస్తే ఈ ఫోన్‌లోని డేటా తొలగిపోతుంది, కాబట్టి ముందు CSV ఎక్స్‌పోర్ట్ చేయండి.'],
+      settings_install: ['యాప్ ఇన్‌స్టాల్ చేయండి', 'Kharchu ను హోమ్ స్క్రీన్‌కు జోడిస్తే మిగతా యాప్‌ల లాగే తెరవవచ్చు.'],
+      settings_look: ['Customize look', 'యాప్‌ను మీ స్టైల్‌కు మార్చుకోండి. లోపల ఏమున్నాయో చూపిస్తాను.'],
+      look_theme: ['థీమ్‌లు', 'లైట్, డార్క్, లేదా కళ్ళకు హాయినిచ్చే Midnight, Aurora, Dusk, Sage, Mist థీమ్‌లు.'],
+      look_icons: ['కేటగిరీ ఐకాన్లు', 'ఐకాన్ టైల్స్ గుండ్రంగా, మృదువుగా లేదా చతురస్రంగా ఎంచుకోండి. Add పాప్‌అప్‌లో కేటగిరీల చుట్టూ బాక్స్ చూపించవచ్చు లేదా దాచవచ్చు.'],
+      look_bar: ['బాటమ్ బార్, Add బటన్', 'బాటమ్ బార్ లేఅవుట్ (నాచ్, ఫ్లాట్, ఫ్లోటింగ్), దాని రంగు, Add బటన్ స్టైల్ ఎంచుకోండి.'],
+      look_colours: ['రంగులు, మూలలు, బ్యాక్‌గ్రౌండ్', '11 యాక్సెంట్ రంగులు, పదునైన లేదా గుండ్రని మూలలు, సాదా, గ్రేడియంట్ లేదా యానిమేటెడ్ బ్యాక్‌గ్రౌండ్‌లు. కార్డ్ స్టైల్, స్పేసింగ్, యానిమేషన్లు, కరెన్సీ కింద ఉన్నాయి.'],
+      settings_database: ['డేటాబేస్, బ్యాకప్', 'మీ డేటా ఈ ఫోన్‌లోనే ఉంటుంది. మీ సొంత Firebase కనెక్ట్ చేస్తే బ్యాకప్ అవుతుంది, ఎక్కువ డివైజ్‌లలో వాడవచ్చు.'],
+      settings_categories: ['కేటగిరీల నిర్వహణ', 'ఖర్చు, ఆదాయ కేటగిరీలను మీ సొంత ఐకాన్, రంగుతో జోడించండి లేదా తొలగించండి.'],
+      settings_plans: ['సేవింగ్స్ ప్లాన్ల నిర్వహణ', 'కొనాలనుకునే లేదా దాచుకోవాలనుకునే దేనికైనా ప్లాన్ సృష్టించండి. ఎప్పుడైనా ఎడిట్ చేయండి లేదా తొలగించండి.'],
+      settings_csv: ['ఎక్స్‌పోర్ట్, ఇంపోర్ట్', 'అన్ని ఎంట్రీలను CSV గా డౌన్‌లోడ్ చేయండి, లేదా CSV నుండి ఇంపోర్ట్ చేయండి. డూప్లికేట్లు వదిలేస్తుంది.'],
+      settings_tour: ['యాప్ టూర్', 'ఈ టూర్‌ను ఎప్పుడైనా ఇక్కడి నుండి మళ్ళీ చూడవచ్చు.'],
+    },
+  },
+
+  // =============================================================== हिन्दी
+  hi: {
+    chooseTitle: 'अपनी भाषा चुनें',
+    chooseSub: 'टूर आपकी चुनी हुई भाषा में ही आगे बढ़ेगा।',
+    next: 'आगे', back: 'पीछे', skip: 'छोड़ें', language: 'भाषा', letsGo: 'दिखाइए',
+    start: 'Kharchu इस्तेमाल करना शुरू करें', demo: 'नमूना डेटा · आपका अपना डेटा सुरक्षित है',
+    intro: [
+      { icon: 'rupee', title: 'जानिए आपका पैसा कहाँ जाता है', body: 'क्या महीना खत्म होने से पहले ही पैसा “पता नहीं कहाँ चला जाता” है? Kharchu आपको साफ़ दिखाता है कि हर रुपया कहाँ खर्च हुआ, ताकि अंदाज़े की जगह कंट्रोल आपके हाथ में रहे।', points: [] },
+      {
+        icon: 'star', title: 'ट्रैक करने से बदलाव क्यों आता है?', body: '',
+        points: [
+          'जो दिखता है, उसे संभाला जा सकता है। खर्च सामने दिखें तो आप तंगी महसूस किए बिना सोच-समझकर खर्च करते हैं।',
+          'छोटे खर्च ही बड़े रिसाव हैं: रोज़ ₹100 की चाय या स्नैक्स यानी महीने के ₹3,000। अब आप इन्हें पहचान पाएँगे।',
+          'मन की शांति: महीने के अंत की “इतना पैसा गया कहाँ?” वाली चिंता नहीं रहेगी।',
+          'हर एंट्री एक छोटी जीत है। जारी रखें तो यह एक पक्की आदत बन जाती है।',
+        ],
+      },
+      { icon: 'sparkle', title: 'चलिए एक छोटा टूर करें', body: 'मैं ऐप का हर हिस्सा खोलकर हर बटन दिखाऊँगा, कुल मिलाकर लगभग 3 मिनट। आप कभी भी छोड़ सकते हैं। अगर आपकी अभी कोई एंट्री नहीं है तो मैं नमूना डेटा इस्तेमाल करूँगा, आपका अपना डेटा नहीं छुआ जाएगा।', points: [] },
+    ],
+    outro: { icon: 'check', title: 'आप तैयार हैं!', body: 'आज ही अपनी पहली एंट्री जोड़ें। बस 10 सेकंड लगते हैं, और आगे चलकर आप खुद को धन्यवाद कहेंगे। यह टूर आप कभी भी Settings → App tour में दोबारा देख सकते हैं।' },
+    steps: {
+      greeting: ['आपका होम', 'सब कुछ यहीं से शुरू होता है: आज आपके पैसे की स्थिति एक नज़र में। फ़ोटो और नाम Settings में बदल सकते हैं।'],
+      period: ['जो अवधि देखनी है वो चुनें', 'बीच में टैप करके हफ़्ता, महीना, साल या अपनी तारीखें चुनें। तीर से पीछे जा सकते हैं। हर टैब यही अवधि मानता है।'],
+      balance: ['आपका बैलेंस', 'चुनी हुई अवधि में जितना बचा, वह यह है। कोई पास हो तो आँख के निशान से इसे छिपा सकते हैं।'],
+      stats: ['आय और खर्च', 'उसी अवधि में कितना आया और कितना गया, साथ-साथ देखें।'],
+      plans: ['बचत योजनाएँ', 'आपके लक्ष्य यहाँ प्रोग्रेस बार के साथ रहते हैं। किसी पर टैप करें तो पूरी जानकारी, या Manage दबाएँ।'],
+      recent: ['आपकी ताज़ा एंट्री', 'एंट्री पर टैप करें तो विवरण। बाएँ स्वाइप से एडिट, दाएँ स्वाइप से डिलीट। टूर के बाद आज़माएँ!'],
+      seeall: ['सब देखें', 'See all दबाएँ तो सारे ट्रांज़ैक्शन यहीं दिन के हिसाब से दिखेंगे। Back से छोटी सूची पर लौटें।'],
+      navbar: ['चार टैब, हमेशा पास', 'Home, Budget, Insights और Settings। किसी भी टैब पर टैप करके वहाँ जाएँ।'],
+      add: ['Add बटन', 'खर्च करें या कमाई हो, यह बड़ा बटन दबाएँ। लगभग 10 सेकंड लगते हैं।'],
+      add_amount: ['प्रकार और रकम', 'Expense या Income चुनें, फिर रकम लिखें।'],
+      add_categories: ['कैटेगरी चुनें', 'आपकी हाल की और सबसे ज़्यादा इस्तेमाल की कैटेगरी पहले आती हैं, इसलिए ज़्यादातर एंट्री एक टैप में हो जाती हैं। नई चाहिए तो Add दबाएँ।'],
+      add_details: ['नोट, तारीख और Save', 'चाहें तो नोट लिखें, ज़रूरत हो तो तारीख बदलें, फिर Save दबाएँ। एंट्री तुरंत आपके फ़ोन में सेव हो जाती है।'],
+      budget_pickers: ['चार्ट चुनें', 'चार्ट का प्रकार (रिंग्स, डोनट, बार, ट्रेंड, रडार) और दिखाने वाला डेटा चुनें, औसत भी उपलब्ध हैं।'],
+      budget_chart: ['आपका पैसा एक तस्वीर में', 'चार्ट आपकी चुनी अवधि के हिसाब से बदलता है। तस्वीर से देखना आसान होता है कि पैसा कहाँ जाता है।'],
+      budget_cards: ['कैटेगरी के हिसाब से खर्च', 'हर कैटेगरी का कुल योग और कुल खर्च में उसका हिस्सा।'],
+      insights_cards: ['झटपट आँकड़े', 'इस अवधि की बचत दर, रोज़ का औसत, शीर्ष कैटेगरी, सबसे बड़ा खर्च, एंट्री की संख्या और शुद्ध बचत।'],
+      insights_averages: ['कैटेगरी औसत', 'हर कैटेगरी का कुल योग, कितनी एंट्री और प्रति एंट्री औसत। खर्च और आय अलग-अलग दिखते हैं।'],
+      insights_search: ['खोजें और फ़िल्टर करें', 'नोट या कैटेगरी से कोई भी एंट्री खोजें, Expense या Income से फ़िल्टर करें। एंट्री दिन के हिसाब से बँटी होती हैं।'],
+      settings_notes: ['नोट्स', 'कोई भी नोट यहाँ लिखें। टाइप करते समय ही सेव होता रहता है, कुछ खोता नहीं।'],
+      settings_profile: ['आपकी प्रोफ़ाइल', 'अपनी फ़ोटो और नाम जोड़ें। Log out करने पर इस फ़ोन का डेटा हट जाता है, इसलिए पहले CSV एक्सपोर्ट कर लें।'],
+      settings_install: ['ऐप इंस्टॉल करें', 'Kharchu को होम स्क्रीन पर जोड़ें और बाकी ऐप की तरह खोलें।'],
+      settings_look: ['Customize look', 'ऐप को अपने अंदाज़ में बदलें। अंदर क्या है, दिखाता हूँ।'],
+      look_theme: ['थीम', 'लाइट, डार्क, या आँखों को आराम देने वाली Midnight, Aurora, Dusk, Sage और Mist थीम।'],
+      look_icons: ['कैटेगरी आइकन', 'आइकन टाइल गोल, मुलायम या चौकोर चुनें, और Add पॉपअप में कैटेगरी के चारों ओर का बॉक्स दिखाएँ या छिपाएँ।'],
+      look_bar: ['बॉटम बार और Add बटन', 'बॉटम बार का लेआउट (नॉच, फ़्लैट, फ़्लोटिंग), उसका रंग और Add बटन का स्टाइल चुनें।'],
+      look_colours: ['रंग, कोने और बैकग्राउंड', '11 एक्सेंट रंग, तीखे या गोल कोने, सादा, ग्रेडिएंट या एनिमेटेड बैकग्राउंड। कार्ड स्टाइल, स्पेसिंग, एनिमेशन और करेंसी नीचे हैं।'],
+      settings_database: ['डेटाबेस और बैकअप', 'आपका डेटा इसी फ़ोन में रहता है। अपना Firebase जोड़ें तो बैकअप होगा और कई डिवाइस पर चलेगा।'],
+      settings_categories: ['कैटेगरी प्रबंधन', 'खर्च और आय की कैटेगरी अपने आइकन और रंग के साथ जोड़ें या हटाएँ।'],
+      settings_plans: ['बचत योजना प्रबंधन', 'जो खरीदना या बचाना चाहते हैं उसके लिए योजना बनाएँ। कभी भी बदलें या हटाएँ।'],
+      settings_csv: ['एक्सपोर्ट और इम्पोर्ट', 'सारी एंट्री CSV में डाउनलोड करें, या CSV से इम्पोर्ट करें। डुप्लिकेट छोड़ दिए जाते हैं।'],
+      settings_tour: ['ऐप टूर', 'यह टूर आप कभी भी यहाँ से दोबारा देख सकते हैं।'],
+    },
+  },
+};

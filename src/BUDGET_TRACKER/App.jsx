@@ -20,6 +20,7 @@ import { BACK_BUTTON } from './constants/backButton';
 import BottomNav from './components/BottomNav';
 import BackgroundFx from './components/BackgroundFx';
 import BackToast from './components/BackToast';
+import Tour from './components/Tour';
 import AddSheet from './components/AddSheet';
 import DetailSheet from './components/DetailSheet';
 import StoragePrompt from './components/StoragePrompt';
@@ -37,6 +38,7 @@ import AppearanceSettings from './pages/AppearanceSettings';
 
 // Remembers (in localStorage) that the first-launch popup was already shown
 const ONBOARDED_KEY = 'bt-onboarded';
+const TOUR_KEY = 'bt-tour-done'; // the welcome tour was seen (or skipped) once
 function wasOnboarded() {
   try {
     return localStorage.getItem(ONBOARDED_KEY) === '1';
@@ -57,6 +59,14 @@ function readLastPage() {
     return { tab, settingsView, goalViewId: typeof saved.goalViewId === 'string' ? saved.goalViewId : null };
   } catch {
     return { tab: 'home', settingsView: 'main', goalViewId: null };
+  }
+}
+
+function wasTourSeen() {
+  try {
+    return localStorage.getItem(TOUR_KEY) === '1';
+  } catch {
+    return true; // storage unavailable: don't nag
   }
 }
 
@@ -97,6 +107,34 @@ export default function App() {
   const [detailId, setDetailId] = useState(null);   // id of the transaction shown in the details popup
   const [confirm, setConfirm] = useState(null);     // { title, text, confirmLabel?, onConfirm }
   const [askStorage, setAskStorage] = useState(() => !wasOnboarded()); // first-launch question
+  // The welcome tour opens for a NEW user (nothing answered yet), before the storage question. Settings -> App tour opens it again.
+  const [tourOpen, setTourOpen] = useState(() => !wasTourSeen() && !wasOnboarded());
+  const returnTo = useRef({ tab: last.tab, settingsView: last.settingsView, goalViewId: last.goalViewId }); // where to go back to after the tour
+
+  function openTour() {
+    returnTo.current = { tab, settingsView, goalViewId };
+    setTourOpen(true);
+  }
+  function closeTour() {
+    try { localStorage.setItem(TOUR_KEY, '1'); } catch { /* ignore */ }
+    const back = returnTo.current;
+    setAdding(null);
+    setGoalViewId(back.goalViewId);
+    setTab(back.tab);
+    setSettingsView(back.settingsView);
+    setTourOpen(false);
+  }
+  // The tour opens the screen each of its steps talks about
+  const tourNav = {
+    apply({ tab: wantedTab, view, popup }) {
+      setGoalViewId(null);
+      setDetailId(null);
+      setConfirm(null);
+      setTab(wantedTab);
+      setSettingsView(view || 'main');
+      setAdding(popup === 'add' ? { tour: true } : null);
+    },
+  };
 
   // ----- derived data -----
   const range = useMemo(() => getRange(period), [period]);
@@ -189,7 +227,7 @@ export default function App() {
         {!goalViewId && tab === 'budget' && <Budget txs={txs} range={range} period={period} setPeriod={setPeriod} />}
         {!goalViewId && tab === 'insights' && <Insights {...listProps} />}
 
-        {!goalViewId && tab === 'settings' && settingsView === 'main' && <Settings onOpen={setSettingsView} ask={setConfirm} />}
+        {!goalViewId && tab === 'settings' && settingsView === 'main' && <Settings onOpen={setSettingsView} ask={setConfirm} onTour={openTour} />}
         {!goalViewId && tab === 'settings' && settingsView === 'appearance' && <AppearanceSettings onBack={() => setSettingsView('main')} />}
         {!goalViewId && tab === 'settings' && settingsView === 'categories' && (
           <CategoryManager type={categoryType} setType={setCategoryType} onBack={() => setSettingsView('main')} askDelete={askDeleteCategory} />
@@ -211,6 +249,7 @@ export default function App() {
           key={adding.initial ? adding.initial.id : adding.preset ? `${adding.preset.type}-${adding.preset.category}` : 'new'} // a different key = a fresh form
           initial={adding.initial}
           preset={adding.preset}
+          quiet={Boolean(adding.tour)}
           onClose={() => setAdding(null)}
           onSaved={() => setAdding(null)}
           onAddCategory={goToCategories}
@@ -230,7 +269,9 @@ export default function App() {
 
       <BackToast message={hint} />
 
-      {askStorage && mode === 'local' && (
+      {tourOpen && <Tour onClose={closeTour} nav={tourNav} />}
+
+      {askStorage && mode === 'local' && !tourOpen && (
         <StoragePrompt onFirebase={() => answerStoragePrompt(true)} onLocal={() => answerStoragePrompt(false)} />
       )}
     </div>

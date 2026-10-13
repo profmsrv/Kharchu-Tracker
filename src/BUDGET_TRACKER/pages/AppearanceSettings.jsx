@@ -51,7 +51,7 @@ export default function AppearanceSettings({ onBack }) {
 
       <div className="flex flex-col gap-2.5">
         {/* theme: System, Light, Dark and the extra themes (constants/themes.js) */}
-        <div className="bt-glass">
+        <div data-tour="look-theme" className="bt-glass">
           <div className="mb-2 flex items-baseline justify-between">
             <b className="text-[13px]">Theme</b>
             <small className="text-[11px] bt-text-mute">Light, dark and more</small>
@@ -60,7 +60,7 @@ export default function AppearanceSettings({ onBack }) {
         </div>
 
         {GROUPS.map((group) => (
-          <div key={group.key} className="bt-glass">
+          <div key={group.key} data-tour={`look-${group.key}`} className="bt-glass">
             <div className="mb-2 flex items-baseline justify-between">
               <b className="text-[13px]">{group.title}</b>
               {group.hint && <small className="text-[11px] bt-text-mute">{group.hint}</small>}

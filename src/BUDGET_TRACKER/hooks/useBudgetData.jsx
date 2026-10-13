@@ -18,6 +18,7 @@ import { createRemote } from '../services/firebaseRemote';
 import { createSyncEngine } from '../services/syncEngine';
 import { clearFirebaseSettings, loadFirebaseSettings, saveFirebaseSettings } from '../services/firebaseSettings';
 import { resolveAppearance } from '../constants/appearance';
+import { DEMO_MIN_REAL_TRANSACTIONS, buildDemo } from '../constants/demoData';
 
 const DataContext = createContext(null);
 
@@ -47,6 +48,14 @@ export function DataProvider({ children }) {
 
   const engineRef = useRef(null);
 
+  // DEMO MODE (the app tour): when the tour asks for it AND the person has almost no data, the screens see sample data.
+  // It is never saved and every action does nothing meanwhile, so the real data cannot be changed by accident.
+  const [demoWanted, setDemoWanted] = useState(false);
+  const demo = demoWanted && data.transactions.length < DEMO_MIN_REAL_TRANSACTIONS;
+  const demoRef = useRef(false);
+  demoRef.current = demo;
+  const shown = useMemo(() => (demo ? { ...data, ...buildDemo(new Date()) } : data), [demo, data]);
+
   // Keep `data` up to date whenever the local store changes
   useEffect(() => {
     setData(store.snapshot());
@@ -75,7 +84,7 @@ export function DataProvider({ children }) {
   // Everything the screens can use. Rebuilt only when something changes.
   const value = useMemo(() => {
     // Split categories into two lists, oldest first: { expense: [...], income: [...] }
-    const sorted = [...data.categories].sort((a, b) => (a.order || 0) - (b.order || 0));
+    const sorted = [...shown.categories].sort((a, b) => (a.order || 0) - (b.order || 0));
     const categories = {
       expense: sorted.filter((c) => c.type === 'expense'),
       income: sorted.filter((c) => c.type === 'income'),
@@ -83,6 +92,7 @@ export function DataProvider({ children }) {
 
     // Makes an action that calls the store and remembers a saving problem (if any)
     const action = (methodName) => async (...args) => {
+      if (demoRef.current) return undefined; // sample data is on screen: change nothing
       try {
         return await store[methodName](...args);
       } catch (err) {
@@ -101,10 +111,12 @@ export function DataProvider({ children }) {
       syncNow: () => (engineRef.current ? engineRef.current.syncNow() : undefined),
 
       // ----- data -----
-      transactions: data.transactions,
+      transactions: shown.transactions,
       categories,
-      goals: data.goals,
-      notes: data.notes,
+      goals: shown.goals,
+      notes: shown.notes,
+      demo, // true while sample data is shown (the tour)
+      setDemoMode: setDemoWanted,
       profile: data.profile,
       appearance: resolveAppearance(data.profile.appearance), // look & feel, with defaults filled in
 
@@ -169,7 +181,7 @@ export function DataProvider({ children }) {
         setFirebase(null);
       },
     };
-  }, [data, error, firebase, syncStatus, store]);
+  }, [data, shown, demo, error, firebase, syncStatus, store]);
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }

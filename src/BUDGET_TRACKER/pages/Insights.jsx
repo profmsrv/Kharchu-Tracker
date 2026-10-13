@@ -126,7 +126,7 @@ export default function Insights({ txs, range, period, setPeriod, onOpen, onEdit
       )}
 
       {/* number cards */}
-      <div className="grid grid-cols-2 gap-2.5">
+      <div data-tour="insights-cards" className="grid grid-cols-2 gap-2.5">
         {cards.map(([icon, label, value]) => (
           <div key={label} className="bt-glass">
             <small className="flex items-center gap-1.5 text-[11px] bt-text-mute"><Icon name={icon} size={14} /> {label}</small>
@@ -136,13 +136,16 @@ export default function Insights({ txs, range, period, setPeriod, onOpen, onEdit
       </div>
 
       {/* the average of every category for the selected period */}
+      <div data-tour="insights-averages">
       <h2 className="mb-2.5 mt-5 flex items-center justify-between text-[15px] font-bold">
         Category averages <small className="text-xs font-medium bt-text-mute">{range.label}</small>
       </h2>
       <AverageCard title="Spending by category" type="expense" txs={txs} />
       <AverageCard title="Income by category" type="income" txs={txs} />
+      </div>
 
       {/* search + filter */}
+      <div data-tour="insights-search">
       <h2 className="mb-2.5 mt-5 text-[15px] font-bold">All transactions</h2>
       <input className="bt-field" placeholder="Search note or category" value={search} onChange={(e) => setSearch(e.target.value)} />
       <div className="my-2.5 flex gap-2">
@@ -155,6 +158,7 @@ export default function Insights({ txs, range, period, setPeriod, onOpen, onEdit
             }`}
           >{label}</button>
         ))}
+      </div>
       </div>
 
       {/* the list, one card per day */}

@@ -14,7 +14,7 @@ import { parseYmd } from '../utils/dates';
 const SWIPE_DISTANCE = 70; // how far (px) the row must be dragged before an action happens
 const MAX_DRAG = 120;      // the row cannot be dragged further than this
 
-export default function TransactionRow({ tx, onOpen, onEdit, onDelete }) {
+export default function TransactionRow({ tx, onOpen, onEdit, onDelete, tourId }) {
   const { getCategory } = useData();
   const category = getCategory(tx.type, tx.category);
   const isExpense = tx.type === 'expense';
@@ -71,7 +71,7 @@ export default function TransactionRow({ tx, onOpen, onEdit, onDelete }) {
   const actionColour = offset > 0 ? 'bt-bg-danger' : 'bt-bg-plum2';
 
   return (
-    <div className="relative my-0.5 overflow-hidden rounded-2xl">
+    <div data-tour={tourId} className="relative my-0.5 overflow-hidden rounded-2xl">
       {/* Layer BEHIND the row: shows "Delete" or "Edit" while swiping */}
       <div
         className={`absolute inset-0 flex items-center justify-between rounded-2xl px-4 text-[13px] font-bold text-white ${actionColour}`}

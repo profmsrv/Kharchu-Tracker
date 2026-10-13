@@ -259,3 +259,29 @@
 /* ---- category boxes in Add transaction (Customize look -> Category border). Off = no border, no box; the chosen one is still tinted ---- */
 .bt-root[data-cat-border='off'] .bt-cat { border-color: transparent; background: transparent; }
 .bt-root[data-cat-border='off'] .bt-cat.bt-cat-on { background: rgb(var(--bt-blush)); }
+
+/* ---- the app tour (components/Tour.jsx): a dimmed layer with a spotlight, a pulsing ring and a small card ---- */
+.bt-root .bt-text-ink { color: rgb(var(--bt-ink)); }
+.bt-root .bt-tour-spot {
+  position: absolute; pointer-events: none;
+  box-shadow: 0 0 0 9999px rgb(10 6 24 / .64);   /* everything outside the box is dimmed */
+  transition: left .34s cubic-bezier(.4, 0, .2, 1), top .34s cubic-bezier(.4, 0, .2, 1), width .34s cubic-bezier(.4, 0, .2, 1), height .34s cubic-bezier(.4, 0, .2, 1), border-radius .34s;
+}
+.bt-root .bt-tour-ring { position: absolute; inset: -3px; border-radius: inherit; border: 2.5px solid rgb(var(--pal-soft)); animation: bt-tour-pulse 1.5s ease-out infinite; }
+@keyframes bt-tour-pulse { 0% { transform: scale(1); opacity: .95; } 100% { transform: scale(1.09); opacity: 0; } }
+.bt-root .bt-tour-badge { padding: 2px 9px; border-radius: 999px; font-size: 10px; font-weight: 700; background: rgb(251 197 49); color: rgb(61 11 74); }
+.bt-root .bt-tour-card {
+  position: absolute; z-index: 3; padding: 14px 16px; border-radius: 22px;
+  background: rgb(var(--bt-surface)); color: rgb(var(--bt-ink)); box-shadow: 0 18px 44px rgb(0 0 0 / .38);
+}
+@keyframes bt-tour-pop { from { transform: translateY(10px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+.bt-root .bt-tour-pop { animation: bt-tour-pop .22s ease-out; }
+.bt-root .bt-tour-arrow { position: absolute; width: 16px; height: 16px; background: rgb(var(--bt-surface)); transform: translateX(-50%) rotate(45deg); }
+.bt-root .bt-tour-arrow-top { top: -7px; border-radius: 4px 0 0 0; }
+.bt-root .bt-tour-arrow-bottom { bottom: -7px; border-radius: 0 0 4px 0; }
+
+/* "swipe me": the transaction row moves left and right, and the colour behind it shows (purple = edit, red = delete) */
+@keyframes bt-tour-swipe { 0%, 100% { transform: translateX(0); } 22% { transform: translateX(-34px); } 44% { transform: translateX(0); } 66% { transform: translateX(34px); } 88% { transform: translateX(0); } }
+@keyframes bt-tour-behind { 0%, 100% { opacity: 1; background-color: transparent; } 22% { opacity: 1; background-color: rgb(var(--bt-plum2)); } 44% { opacity: 1; background-color: transparent; } 66% { opacity: 1; background-color: #f0605d; } 88% { opacity: 1; background-color: transparent; } }
+.bt-root .bt-tour-wiggle > div:last-child { animation: bt-tour-swipe 2.4s ease-in-out infinite !important; }
+.bt-root .bt-tour-wiggle > div:first-child { animation: bt-tour-behind 2.4s ease-in-out infinite !important; }

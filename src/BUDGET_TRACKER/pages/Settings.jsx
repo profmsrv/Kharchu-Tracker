@@ -13,9 +13,9 @@ import { analyzeCsv, buildCsv, downloadCsv } from '../utils/csv';
 import { fileToSmallDataUrl, isImageUrl } from '../utils/image';
 
 // A tappable row:  [icon]  Title / small text  >
-function SettingsRow({ icon, title, sub, onClick }) {
+function SettingsRow({ icon, title, sub, onClick, tour }) {
   return (
-    <button onClick={onClick} className="mt-2.5 flex w-full items-center gap-3 rounded-2xl border bt-border-line bt-bg-surface80 p-3.5 text-left text-sm">
+    <button data-tour={tour} onClick={onClick} className="mt-2.5 flex w-full items-center gap-3 rounded-2xl border bt-border-line bt-bg-surface80 p-3.5 text-left text-sm">
       <span className="grid h-[38px] w-[38px] place-items-center rounded-xl bt-bg-blush"><Icon name={icon} size={19} /></span>
       <div className="flex-1">
         {title}
@@ -27,8 +27,9 @@ function SettingsRow({ icon, title, sub, onClick }) {
 }
 
 // `onOpen('appearance' | 'categories' | 'goals' | 'notes' | 'firebase')` makes App.jsx show that sub-screen
+// `onTour()` opens the welcome tour again (from the beginning)
 // `ask(dialog)` shows the "are you sure?" popup (see App.jsx)
-export default function Settings({ onOpen, ask }) {
+export default function Settings({ onOpen, ask, onTour }) {
   const { profile, saveProfile, transactions, categories, goals, notes, mode, firebaseSettings, syncStatus, logout } = useData();
   const [name, setName] = useState(profile.name);
   const [message, setMessage] = useState('');
@@ -138,10 +139,10 @@ export default function Settings({ onOpen, ask }) {
       <h2 className="mb-2.5 text-[15px] font-bold">Settings</h2>
 
       {/* Notes are the first thing in Settings */}
-      <SettingsRow icon="note" title="Notes" sub={`${notes.length} note${notes.length === 1 ? '' : 's'}`} onClick={() => onOpen('notes')} />
+      <SettingsRow tour="settings-notes" icon="note" title="Notes" sub={`${notes.length} note${notes.length === 1 ? '' : 's'}`} onClick={() => onOpen('notes')} />
 
       {/* profile: photo + name (the name is saved when the field loses focus) */}
-      <div className="bt-glass mt-2.5">
+      <div data-tour="settings-profile" className="bt-glass mt-2.5">
         <div className="flex items-center gap-3">
           <button aria-label="Change photo" onClick={() => fileInput.current && fileInput.current.click()}>
             <Avatar photo={profile.photo} name={profile.name} size={64} />
@@ -179,20 +180,24 @@ export default function Settings({ onOpen, ask }) {
       </div>
 
       <SettingsRow
+        tour="settings-install"
         icon="phone"
         title="Install app"
         sub={app.installed ? 'Already installed ✓' : app.canInstall ? 'Tap to install on this device' : 'Add it to your home screen'}
         onClick={installApp}
       />
-      <SettingsRow icon="sliders" title="Customize look" sub="Theme, icons, bottom bar, colours…" onClick={() => onOpen('appearance')} />
-      <SettingsRow icon="database" title="Database" sub={databaseText} onClick={() => onOpen('firebase')} />
-      <SettingsRow icon="tag" title="Manage categories" sub={`${categories.expense.length} expense · ${categories.income.length} income`} onClick={() => onOpen('categories')} />
-      <SettingsRow icon="target" title="Manage savings plans" sub={`${goals.length} plan${goals.length === 1 ? '' : 's'}`} onClick={() => onOpen('goals')} />
-      <SettingsRow icon="download" title="Export data as CSV" sub={`${transactions.length} transactions`} onClick={exportCsv} />
-      <SettingsRow icon="upload" title="Import data from CSV" sub="Add transactions from a CSV file" onClick={() => csvInput.current && csvInput.current.click()} />
+      <SettingsRow tour="settings-look" icon="sliders" title="Customize look" sub="Theme, icons, bottom bar, colours…" onClick={() => onOpen('appearance')} />
+      <SettingsRow tour="settings-database" icon="database" title="Database" sub={databaseText} onClick={() => onOpen('firebase')} />
+      <SettingsRow tour="settings-categories" icon="tag" title="Manage categories" sub={`${categories.expense.length} expense · ${categories.income.length} income`} onClick={() => onOpen('categories')} />
+      <SettingsRow tour="settings-plans" icon="target" title="Manage savings plans" sub={`${goals.length} plan${goals.length === 1 ? '' : 's'}`} onClick={() => onOpen('goals')} />
+      <SettingsRow tour="settings-export" icon="download" title="Export data as CSV" sub={`${transactions.length} transactions`} onClick={exportCsv} />
+      <SettingsRow tour="settings-import" icon="upload" title="Import data from CSV" sub="Add transactions from a CSV file" onClick={() => csvInput.current && csvInput.current.click()} />
       <input ref={csvInput} type="file" accept=".csv,text/csv,text/plain" className="hidden" onChange={onCsvPicked} />
 
       {message && <p className="bt-hint mt-2">{message}</p>}
+
+      {/* the last row: the welcome tour, from the very beginning (language question first) */}
+      <SettingsRow tour="settings-tour" icon="star" title="App tour" sub="See how Kharchu works and why it helps" onClick={onTour} />
 
       {installHelp && <InstallHelpSheet onClose={() => setInstallHelp(false)} />}
       {importing && <ImportSheet fileName={importing.fileName} analysis={importing.analysis} onClose={() => setImporting(null)} />}

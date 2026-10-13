@@ -144,9 +144,12 @@ export function createBackStack(win, options = {}) {
     },
 
     // Register a layer. `close()` is called when Back is pressed. Returns a function that removes the layer.
-    pushLayer(close) {
-      const layer = { close };
-      layers.push(layer);
+    // A PINNED layer (the tour) always stays on top: layers registered later are put underneath it.
+    pushLayer(close, pinned = false) {
+      const layer = { close, pinned };
+      const firstPinned = layers.findIndex((item) => item.pinned);
+      if (!pinned && firstPinned >= 0) layers.splice(firstPinned, 0, layer);
+      else layers.push(layer);
       schedule();
       return () => {
         const index = layers.indexOf(layer);

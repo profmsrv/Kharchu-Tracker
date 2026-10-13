@@ -10,6 +10,7 @@ The whole app is **one self-contained folder** with a single default export, so 
 
 ## Features
 
+- **App tour**: a guided walk through the real app (spotlight on every button, sample data when empty) in English, తెలుగు or हिन्दी; replay from Settings → App tour
 - **Phone Back button stays inside the app** – closes a popup, leaves a sub-screen, returns to Home; on Home a second quick Back exits
 - **Home** – profile photo, balance, income/expense, savings plans, the last 7 days of transactions and **See all** = every transaction right on Home (grouped by day, 50 at a time)
 - **Period filter** – Week / Month / Year / **Custom range** (pick any two dates). Shown on Home, Budget and Insights; the choice filters every screen
@@ -162,7 +163,7 @@ BUDGET_TRACKER/
 │   └── ui/                   # Icon, Sheet, OptionSheet, Pick, ConfirmDialog, Segmented, ChipGrid
 ├── pages/                    # Home, Budget, Insights, Settings, AppearanceSettings, CategoryManager,
 │                             # GoalsManager, GoalDetail, NotesManager, FirebaseSetup
-├── tests/                    # sync-test.mjs, back-test.mjs, csv-test.mjs, usage-test.mjs, averages-test.mjs
+├── tests/                    # sync-test.mjs, back-test.mjs, csv-test.mjs, usage-test.mjs, averages-test.mjs, tour-test.mjs
 ├── firestore.rules.example
 └── LICENSE
 ```
@@ -286,3 +287,18 @@ MIT. See `LICENSE` (replace `<your name>`).
 ## Category averages
 
 Insights → **Category averages** lists, for the selected period (week, month, year or custom range), every category with its **total**, its **number of transactions** and its **average** = total / number of transactions (spending and income separately). Example: Food has 100, 200 and 300 in October → total 600, 3 transactions, average 200. The Budget tab has the same numbers as the chart data **Average spent** and **Average income** (bar chart) and **Average spent** (radar). The maths is in `utils/averages.js`.
+
+## App tour (guided walk through the real app)
+
+A new user (nothing answered yet) first gets the tour; **Settings → App tour** (the last row) plays it again from the very beginning, and the app returns to the page you were on.
+
+1. **Language** (English, తెలుగు, हिन्दी): asked first; the rest of the tour is in that language (remembered in `bt-tour-lang`).
+2. **Intro cards**: why the app helps (what you can see you can manage, small leaks add up, a calm mind, small wins), then "let's take a tour". The app stays visible behind a dimmed layer.
+3. **Guided walk** (31 steps, Android "coach mark" style): the tour opens each tab, the Add popup and Customize look, dims everything except the button or area it explains (a spotlight with a pulsing ring) and shows a small card with the explanation, a progress bar, Back / Next / Skip. The first transaction row wiggles to show "swipe to edit or delete". Very tall areas are only lit in their upper part so the card always has room.
+4. **Outro**: "you are ready", start using the app.
+
+* **Sample data:** if you have fewer than 5 transactions, sample entries, plans and notes are shown during the tour (a small "Sample data · your own data is safe" label is on the card). They are never saved, and every action does nothing while they are shown (`demo` mode in `hooks/useBudgetData.jsx`, data in `constants/demoData.js`). With 5 or more transactions the tour shows your own data.
+* **Back button:** goes one step back; the tour is a *pinned* back layer, so it is always the top one (`services/backStack.js`).
+* **Where a step points:** `data-tour="..."` attributes in the screens. `TOUR_STEPS` in `constants/tour.js` lists the steps (tab, popup, Customize look screen, target ids; a list of ids = one box around all of them) and `TOUR[language].steps` has the texts. To add a step: add a `data-tour` to the element, add it to `TOUR_STEPS` and a text in every language (`tests/tour-test.mjs` checks this).
+* **Add a language:** copy one block of `TOUR`, translate it, add it to `LANGUAGES`.
+* Files: `components/Tour.jsx`, `constants/tour.js`, `constants/demoData.js`. "Seen" is `bt-tour-done`.

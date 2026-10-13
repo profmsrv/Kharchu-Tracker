@@ -47,6 +47,7 @@ export default function BottomNav({ tab, onTab, onAdd }) {
     <button
       onClick={onAdd}
       aria-label="Add transaction"
+      data-tour="nav-add"
       className="grid h-11 w-11 place-items-center rounded-full bt-fab transition active:scale-95"
     >
       <AddSymbol />
@@ -60,12 +61,14 @@ export default function BottomNav({ tab, onTab, onAdd }) {
         <button
           onClick={onAdd}
           aria-label="Add transaction"
+          data-tour="nav-add"
           className="absolute left-1/2 top-[-27px] z-10 grid h-[54px] w-[54px] -translate-x-1/2 place-items-center rounded-full bt-fab transition active:scale-95"
         >
           <AddSymbol />
         </button>
         {/* Only a SMALL safe-area gap (max 6px) is added below the icons, so there is no big empty strip under them */}
         <nav
+          data-tour="nav-bar"
           className="bt-nav-bar flex items-center justify-around rounded-b-[28px] px-1.5"
           style={{
             height: 'calc(54px + min(env(safe-area-inset-bottom, 0px), 6px))',
@@ -86,7 +89,7 @@ export default function BottomNav({ tab, onTab, onAdd }) {
   if (type === 'flat') {
     return (
       <div className="absolute inset-x-0 bottom-0 z-10">
-        <nav className="bt-nav-bar flex h-[calc(60px+env(safe-area-inset-bottom))] items-center justify-around border-t bt-border-line px-1.5 pb-[env(safe-area-inset-bottom)]">
+        <nav data-tour="nav-bar" className="bt-nav-bar flex h-[calc(60px+env(safe-area-inset-bottom))] items-center justify-around border-t bt-border-line px-1.5 pb-[env(safe-area-inset-bottom)]">
           {LEFT_TABS.map(renderTab)}
           {inlineAddButton}
           {RIGHT_TABS.map(renderTab)}
@@ -98,7 +101,7 @@ export default function BottomNav({ tab, onTab, onAdd }) {
   // ----- layout 3: floating pill -----
   return (
     <div className="absolute inset-x-0 bottom-0 z-10 px-3 pb-[calc(10px+env(safe-area-inset-bottom))]">
-      <nav className="bt-nav-bar bt-nav-shadow flex h-[58px] items-center justify-around rounded-full px-2">
+      <nav data-tour="nav-bar" className="bt-nav-bar bt-nav-shadow flex h-[58px] items-center justify-around rounded-full px-2">
         {LEFT_TABS.map(renderTab)}
         {inlineAddButton}
         {RIGHT_TABS.map(renderTab)}

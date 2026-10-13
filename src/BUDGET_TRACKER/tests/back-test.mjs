@@ -149,5 +149,16 @@ const depthOf = (b) => b.entries[b.index].state && b.entries[b.index].state.btDe
   ok('10 never leaves, shows the stay hint', !b.left && messages.every((m) => m === 'You are on the Home screen') && messages.length === 3);
 }
 
+// 11. a PINNED layer (the tour) stays on top, also when other layers are added later
+{
+  const { b, stack } = app(); b.fire('pointerup');
+  const order = [];
+  const tour = stack.pushLayer(() => { order.push('tour'); tour(); }, true);
+  const popup = stack.pushLayer(() => { order.push('popup'); popup(); });   // registered AFTER the tour, must still be below it
+  await tick();
+  await press(b); await press(b);
+  ok('11 Back closes the pinned tour first, then the popup', order.join() === 'tour,popup' && depthOf(b) === 1 && !b.left);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
